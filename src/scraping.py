@@ -37,14 +37,18 @@ class Driiveme():
         return html
 
     def new_city_to_DB(self, html):
-        if re.search('a-destination-de', html):
+        new_city = 0
+        html_cities = 0
+        if re.search('Suggestion de départs', html):
+            html_cities = re.findall('.*au-depart-de-(.*?)(?:-et-a-|(?:\.html)).*', html)
+        elif re.search('Suggestion de destinations', html):
             html_cities = re.findall('.*a-destination-de-(.*?).html.*', html)
-        else:
-            html_cities = re.findall('.*au-depart-de-(.*?).html.*', html)
         for city in html_cities:
             if not hasattr(self, 'cities') or not city in self.cities['CITY'].unique():
+                new_city += 1
                 save_DB('cities.csv', (city, time.strftime("%d/%m/%Y"), 0))
                 self.cities = get_DB('cities.csv')
+        return new_city
 
     def new_trip_to_DB(self, html):
         self.new_trips.clear()
@@ -64,6 +68,7 @@ class Driiveme():
 
         save_list_DB('trips.csv', self.new_trips)
         self.trips = get_DB('trips.csv')
+        return len(self.new_trips)
 
 driiveme = Driiveme()
 
@@ -72,9 +77,18 @@ driiveme.new_city_to_DB(html)
 
 while 1:
     for index, row in driiveme.cities.iterrows():
-        if row['UPDATED'] != time.strftime("%d/%m/%Y"):
-            print(f'new city to search trips : {row["CITY"]} url :'+driiveme.bgn_url_city+str(row['CITY'])+'.html')
-            html = driiveme.get_page(driiveme.bgn_url_city+str(row['CITY'])+'.html')
-            driiveme.new_city_to_DB(html)
-            driiveme.new_trip_to_DB(html)
-            update_val_DB('cities.csv', [row['CITY'], row['DATE'], str(row['UPDATED'])], [row['CITY'], row['DATE'], time.strftime("%d/%m/%Y")])
+        if row['UPDATED'] == time.strftime("%d/%m/%Y"):
+            pass
+        url = 'https://www.driiveme.com/rechercher-trajet/'
+        html = driiveme.get_page(url + 'au-depart-de-' + str(row['CITY']) + '.html')
+        new_city_dep = driiveme.new_city_to_DB(html)
+        new_trip_dep = driiveme.new_trip_to_DB(html)
+        html = driiveme.get_page(url + 'a-destination-de-' + str(row['CITY']) + '.html')
+        new_city_dest = driiveme.new_city_to_DB(html)
+        new_trip_dest = driiveme.new_trip_to_DB(html)
+        update_val_DB('cities.csv',
+                      [row['CITY'], row['DATE'], str(row['UPDATED'])],
+                      [row['CITY'], row['DATE'], time.strftime("%d/%m/%Y")])
+        print(f'Départ: +{new_city_dep} city & +{new_trip_dep} trip - '
+              f'Destination: +{new_city_dest} city & {new_trip_dest} trip'
+              f' - {row["CITY"]}')
