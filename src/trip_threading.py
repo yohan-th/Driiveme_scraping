@@ -15,5 +15,5 @@ class GetTripInfo_Thread(threading.Thread):
             log(f"[Threading err get trip] --> abort page {self.url}")
             return
         infos = get_infos_resa(html)
-        print(infos)
+        #print(infos)
         self.new_trips = self.new_trips.append(infos)
