@@ -38,7 +38,7 @@ class Driiveme():
 
     def new_city_to_DB(self, html):
         new_city = 0
-        html_cities = 0
+        html_cities = []
         if re.search('Suggestion de départs', html):
             html_cities = re.findall('.*au-depart-de-(.*?)(?:-et-a-|(?:\.html)).*', html)
         elif re.search('Suggestion de destinations', html):
@@ -78,7 +78,7 @@ driiveme.new_city_to_DB(html)
 while 1:
     for index, row in driiveme.cities.iterrows():
         if row['UPDATED'] == time.strftime("%d/%m/%Y"):
-            pass
+            continue
         url = 'https://www.driiveme.com/rechercher-trajet/'
         html = driiveme.get_page(url + 'au-depart-de-' + str(row['CITY']) + '.html')
         new_city_dep = driiveme.new_city_to_DB(html)
