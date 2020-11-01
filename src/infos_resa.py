@@ -1,57 +1,5 @@
 import re
 import time
-import pandas as pd
-
-
-def infos_trips():
-    ret = """URL,
-           ID,
-           Date,
-           Brand,
-           Dep_lieu,
-           Dep_address,
-           Dep_CP,
-           Dep_GPS_latitude,
-           Dep_GPS_longitude,
-           Dest_lieu,
-           Dest_address,
-           Dest_CP,
-           Dest_GPS_latitude,
-           Dest_GPS_longitude,
-           Date_debut_resa,
-           Date_fin_resa,
-           Cat_vehicule,
-           Modele,
-           Nbr_place,
-           Distance_trajet,
-           Pre_reservation"""
-    return ret.replace("\n", "").replace(' ', '')
-
-def init_trips():
-    columns = ['URL',
-               'ID',
-               'Date',
-               'Brand',
-               'Depart_lieu',
-               'Depart_address',
-               'Depart_CP',
-               'Depart_GPS_latitude',
-               'Depart_GPS_longitude',
-               'Dest_lieu',
-               'Dest_address',
-               'Dest_CP',
-               'Dest_GPS_latitude',
-               'Dest_GPS_longitude',
-               'Date_debut resa',
-               'Date fin resa',
-               'Categorie vehicule',
-               'Modele',
-               'Nbr place',
-               'Distance trajet',
-               'Pré-réservation'
-               ]
-    ret = pd.DataFrame(columns=columns)
-    return (ret)
 
 def get_infos_resa(data:str):
     info_resa = []
