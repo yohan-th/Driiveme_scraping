@@ -33,4 +33,4 @@ try:
 except OSError as e:
     code = e.code if hasattr(e, 'code') else 'no_code'
     reason = e.reason if hasattr(e, 'reason') else 'no_reason'
-    mail_yohan("[driiveme] Erreur python", f"{code}:{reason}")
+    mail_yohan("[driiveme] Erreur python", f"{code}:{reason}\n{e}")

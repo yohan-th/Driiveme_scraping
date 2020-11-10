@@ -5,17 +5,17 @@ from subprocess import run, PIPE
 
 def mail_yohan(sujet, message):
     logfile = open('mail.log', "a+", encoding='utf-8')
-    logfile.write(f'{sujet}-{message}\n')
+    logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+f'] {sujet}-{message}\n')
     logfile.close()
-    #run(["sendmail", "-v", "contact@e.mail"], stdout=PIPE,
-    #    input=f"Subject: {sujet} \n\n {message}", encoding='utf-8')
+    run(["bash", "send_mail.sh", sujet, message])
 
 def log(txt:str):
-    print(txt)
+    #print(txt)
     logfile = open('file.log', "a+")
     logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+']'+txt+'\n')
     logfile.close()
 
+mail_yohan('sujet', 'sujet')
 
 from urllib.request import Request, urlopen
 
@@ -35,9 +35,9 @@ def get_html(url:str, max_attempt:int=3):
 
             log(f"Error {code} {attempt}/{max_attempt} {reason} : {url} - {e}")
             if attempt == max_attempt:
-                mail_yohan("[driiveme] Erreur get_html", f"{code}:{reason}\n{url}\nattempt {attempt}/{max_attempt}")
+                mail_yohan("[driiveme] Erreur get_html", f"{code}:{reason}\n{e}\n{url}\nattempt {attempt}/{max_attempt}")
             if code == 503 or code == 500:
-                time.sleep(10 * 60)
-            time.sleep(60)
+                time.sleep(1 * 60 * 60)
+            time.sleep(10 * 60)
             attempt += 1
     return -1
