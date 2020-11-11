@@ -1,12 +1,14 @@
 import time
 import os
 import sys
-from subprocess import run, PIPE
+from subprocess import run
+from datetime import datetime, timedelta
 
-def mail_yohan(sujet, message):
-    logfile = open('mail.log', "a+", encoding='utf-8')
-    logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+f'] {sujet}-{message}\n')
-    logfile.close()
+def mail_yohan(sujet, message, log=True):
+    if log == True:
+        logfile = open('mail.log', "a+", encoding='utf-8')
+        logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+f'] {sujet}-{message}\n')
+        logfile.close()
     run(["bash", "send_mail.sh", sujet, message])
 
 def log(txt:str):
@@ -15,7 +17,12 @@ def log(txt:str):
     logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+']'+txt+'\n')
     logfile.close()
 
-mail_yohan('sujet', 'sujet')
+def is_end_month():
+    tdy = datetime.now()
+    if (tdy + timedelta(days=1)).strftime('%m') != tdy.strftime('%m'):
+        return True
+    else:
+        return False
 
 from urllib.request import Request, urlopen
 
