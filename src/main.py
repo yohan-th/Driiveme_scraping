@@ -1,4 +1,5 @@
 from scraping import *
+from trip_stats import *
 
 
 def fetch_driiveme(driiveme):
@@ -25,11 +26,16 @@ driiveme = Driiveme()
 
 html = driiveme.get_page('https://driiveme.com/rechercher-trajet.html')
 driiveme.new_city_to_DB(html)
-
+rapport_sent = False
 try:
     while 1:
         fetch_driiveme(driiveme)
-        time.sleep(3*60*60)
+        if is_end_month() and rapport_sent != True:
+            send_stat()
+            rapport = True
+        elif not is_end_month() and rapport_sent == True:
+            rapport = False
+        time.sleep(4*60*60)
 except OSError as e:
     code = e.code if hasattr(e, 'code') else 'no_code'
     reason = e.reason if hasattr(e, 'reason') else 'no_reason'
