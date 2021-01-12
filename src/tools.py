@@ -7,9 +7,16 @@ from datetime import datetime, timedelta
 def mail_yohan(sujet, message, log=True):
     if log == True:
         logfile = open('mail.log', "a+", encoding='utf-8')
-        logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+f'] {sujet}-{message}\n')
+        clean_msg = message.replace('\n', '')
+        logfile.write('['+time.strftime("%d/%m/%Y-%H:%M")+f'] {sujet}-{clean_msg}\n')
         logfile.close()
-    run(["bash", "send_mail.sh", sujet, message])
+    try:
+        run(["bash", "send_mail.sh", sujet, message])
+    except OSError as e:
+        time.sleep(10)
+        run(["bash", "send_mail.sh", 'Error send mail', str(e)])
+        time.sleep(10) 
+        run(["bash", "send_mail.sh", sujet, message])
 
 def log(txt:str):
     #print(txt)

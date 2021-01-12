@@ -32,7 +32,7 @@ class Stats():
     def plot_new_trips(self):
         x = []
         y = []
-        for delta in range(30, 1, -1):
+        for delta in range(365, 1, -1):#nbr de jour from today -1
             x.append((datetime.now() - timedelta(delta)).strftime('%d/%m/%Y'))
             y.append(self.trips['date'].str.contains(x[-1]).sum())
         fig, ax = plt.subplots(figsize=(15, 3))
@@ -76,7 +76,7 @@ def send_stat():
         <body>
             <div class="container" style="float:left;" >
                 <div class="right" style="float:left;margin-left:200px;">
-                    <h4 style="margin:50">Statistique in {datetime.today().strftime('%B')}</h4>
+                    <h4 style="margin:50">Statistique in {datetime.today().strftime('%B')} since 11/2020</h4>
                     <p>Size database: {round(os.path.getsize('driiveme.db')/1000000)}MB</p>
                 </div>
                 <div class="left" style="float:left">
@@ -84,9 +84,9 @@ def send_stat():
                 </div>
                 
             </div>
-            <img width="80%" src="data:image/png;base64,{b64_trips.decode('utf-8')}" alt="Red dot" />
+            <img style="margin-left:50px;" width="80%" src="data:image/png;base64,{b64_trips.decode('utf-8')}" alt="Red dot" />
         </body>
     </html>
     """
 
-    mail_yohan('Rapport scraping driiveme', content, True)
+    mail_yohan('Rapport scraping driiveme', content, False)
